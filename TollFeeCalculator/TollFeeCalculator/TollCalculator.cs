@@ -1,10 +1,14 @@
-﻿using System;
+﻿using PublicHoliday;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using TollFeeCalculator;
+using static TollFeeCalculator.TollFeeConstants;
 
 public class TollCalculator
 {
-
+    readonly TollFeeConstants constants = new TollFeeConstants();
     /**
      * Calculate the total toll fee for one day
      *
@@ -18,10 +22,13 @@ public class TollCalculator
         if (tollPasses == null || tollPasses.Length == 0 || 
            (vehicle == null || vehicle.VehicleIsTollFree)) return 0;
 
+        IList<DateTime> tollPassesDateSorted = tollPasses.OrderBy(tollpass => tollpass.Date).ToList();
+        IList<DateTime> tollPassesThatWillHaveFee = RemoveTollFreePasses(tollPassesDateSorted);
 
-        DateTime intervalStart = tollPasses[0];
+
+        DateTime intervalStart = tollPassesDateSorted.First();
         int totalFee = 0;
-        foreach (DateTime date in tollPasses)
+        foreach (DateTime date in tollPassesDateSorted)
         {
             int nextFee = GetTollFee(date, vehicle);
             int tempFee = GetTollFee(intervalStart, vehicle);
@@ -44,15 +51,49 @@ public class TollCalculator
         return totalFee;
     }
 
-    private bool IsTollFreeVehicle(Vehicle vehicle)
+    private IList<DateTime> RemoveTollFreePasses(IList<DateTime> tollPasses)
     {
-        return vehicle.VehicleIsTollFree;
+        tollPasses = RemoveTollFreeDay(tollPasses);
+        tollPasses = RemoveTollFreeTime(tollPasses);
+        return tollPasses;
+    }
+
+    private IList<DateTime> RemoveTollFreeTime(IList<DateTime> tollPasses)
+    {
+        return tollPasses.Where(tollPass => !IsTollFreeTime(tollPass)).ToList();
+    }
+
+    public bool IsTollFreeTime(DateTime tollPass)
+    {
+        var tollFeeStartTime = new TimeSpan(06, 00, 00);
+        var tollFeeEndTime = new TimeSpan(18, 30, 00);
+        if (tollPass.TimeOfDay < tollFeeStartTime || tollPass.TimeOfDay >= tollFeeEndTime) return true;
+        return false;
+    }
+
+    private IList<DateTime> RemoveTollFreeDay(IList<DateTime> tollPasses)
+    {
+        return tollPasses.Where(tollPass => !IsTollFreeDate(tollPass)).ToList();
+    }
+
+    // Using the PublicHoliday nougat to check if the datetime is during a public holiday, etc.
+    // Reference: https://github.com/martinjw/Holiday
+    // License: https://github.com/martinjw/Holiday/blob/master/license.txt
+    public bool IsTollFreeDate(DateTime tollPass)
+    {
+        string tollPassMonth = tollPass.ToString("MMMM", new CultureInfo("en-US"));
+        if (constants.tollFreeMonth.Any(month => month.ToString() == tollPassMonth)) return true;
+
+        SwedenPublicHoliday publicHoliday = new SwedenPublicHoliday();
+        if (publicHoliday.IsPublicHoliday(tollPass) ||
+            publicHoliday.IsPublicHoliday(tollPass.AddDays(1)) ||
+            !publicHoliday.IsWorkingDay(tollPass)) return true;
+
+        return false;
     }
 
     public int GetTollFee(DateTime date, Vehicle vehicle)
     {
-        if (IsTollFreeDate(date) || IsTollFreeVehicle(vehicle)) return 0;
-
         int hour = date.Hour;
         int minute = date.Minute;
 
@@ -66,40 +107,5 @@ public class TollCalculator
         else if (hour == 17 && minute >= 0 && minute <= 59) return 13;
         else if (hour == 18 && minute >= 0 && minute <= 29) return 8;
         else return 0;
-    }
-
-    private Boolean IsTollFreeDate(DateTime date)
-    {
-        int year = date.Year;
-        int month = date.Month;
-        int day = date.Day;
-
-        if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) return true;
-
-        if (year == 2013)
-        {
-            if (month == 1 && day == 1 ||
-                month == 3 && (day == 28 || day == 29) ||
-                month == 4 && (day == 1 || day == 30) ||
-                month == 5 && (day == 1 || day == 8 || day == 9) ||
-                month == 6 && (day == 5 || day == 6 || day == 21) ||
-                month == 7 ||
-                month == 11 && day == 1 ||
-                month == 12 && (day == 24 || day == 25 || day == 26 || day == 31))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private enum TollFreeVehicles
-    {
-        Motorbike = 0,
-        Tractor = 1,
-        Emergency = 2,
-        Diplomat = 3,
-        Foreign = 4,
-        Military = 5
     }
 }
