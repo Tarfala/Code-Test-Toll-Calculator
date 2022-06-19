@@ -13,11 +13,15 @@ public class TollCalculator
      * @return - the total toll fee for that day
      */
 
-    public int GetTollFee(Vehicle vehicle, DateTime[] dates)
+    public int GetTollFee(Vehicle vehicle, DateTime[] tollPasses)
     {
-        DateTime intervalStart = dates[0];
+        if (tollPasses == null || tollPasses.Length == 0 || 
+           (vehicle == null || vehicle.VehicleIsTollFree)) return 0;
+
+
+        DateTime intervalStart = tollPasses[0];
         int totalFee = 0;
-        foreach (DateTime date in dates)
+        foreach (DateTime date in tollPasses)
         {
             int nextFee = GetTollFee(date, vehicle);
             int tempFee = GetTollFee(intervalStart, vehicle);
@@ -42,7 +46,6 @@ public class TollCalculator
 
     private bool IsTollFreeVehicle(Vehicle vehicle)
     {
-        if (vehicle == null) return false;
         return vehicle.VehicleIsTollFree;
     }
 
