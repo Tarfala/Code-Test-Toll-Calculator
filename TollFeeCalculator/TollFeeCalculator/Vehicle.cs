@@ -14,7 +14,7 @@ namespace TollFeeCalculator
             VehicleType = vehicleType;
         }
 
-        private readonly List<VehicleType> TollFreeVehicleCollection = new List<VehicleType>
+        private readonly List<VehicleType> TollFreeVehicles = new List<VehicleType>
         {
             VehicleType.Motorbike,
             VehicleType.Tractor,
@@ -27,7 +27,7 @@ namespace TollFeeCalculator
         {
             get
             {
-                return TollFreeVehicleCollection.Contains(this.VehicleType);
+                return TollFreeVehicles.Contains(this.VehicleType);
             }
         }        
     }

@@ -23,5 +23,6 @@ namespace TollFeeCalculator
             November,
             December
         }
+        public int MaximumFeeParDay = 60;
     }
 }
