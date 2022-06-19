@@ -9,7 +9,7 @@ namespace TollFeeCalculator.Test
     {
         readonly TollCalculator tollFeeCalculator = new TollCalculator();
         readonly TestConstants testConstants = new TestConstants();
-
+        #region Null Or Empty Object Tests
         [Test]
         public void Null_Parameters_Should_Return_0_Toll_Fee()
         {
@@ -32,6 +32,8 @@ namespace TollFeeCalculator.Test
 
             Assert.AreEqual(expected, result);
         }
+        #endregion
+        #region Public Holiday Tests
         [Test]
         [TestCase("2022-01-06 12:00:00")] // Epiphany day - Thursday
         [TestCase("2022-06-06 08:00:00")] // National day - Monday
@@ -57,7 +59,8 @@ namespace TollFeeCalculator.Test
 
             Assert.AreEqual(expected, result);
         }
-
+        #endregion
+        #region Free Toll Passage Test
         [Test]
         [TestCase("2022-06-20 05:59:59")]
         [TestCase("2022-06-20 18:30:01")] 
@@ -80,6 +83,7 @@ namespace TollFeeCalculator.Test
 
             Assert.AreEqual(expected, result);
         }
+        #endregion
 
     }
 }

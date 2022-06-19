@@ -3,5 +3,5 @@
 internal class TollPassageAndFee
 {    
     public DateTime TollPassage { get; set; }
-    public int Fee { get; set; }
+    public decimal Fee { get; set; }
 }

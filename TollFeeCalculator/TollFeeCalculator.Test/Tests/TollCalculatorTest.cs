@@ -41,10 +41,25 @@ namespace TollFeeCalculator.Test.Tests
         }
 
         [Test]
+        public void When_Passing_Toll_At_0800_1500_1800_Get_Correct_Fee()
+        {
+            DateTime[] dates = new DateTime[] {
+                new DateTime(2022, 06, 20, 08, 00, 00),
+                new DateTime(2022, 03, 02, 15, 00, 00),
+                new DateTime(2022, 03, 02, 18, 00, 00)
+            };
+
+            var expected = 34;
+            var result = tollFeeCalculator.GetTollFee(testConstants.Car, dates);
+
+            Assert.AreEqual(expected, result);
+        }
+        #region MaxFeeTests
+        [Test]
         public void When_Fee_Exceeds_Maxiumum_Fee_Get_Maximum_Fee()
         {
             DateTime[] dates = new DateTime[] {
-                new DateTime(2021, 03, 02, 06, 00, 00),            
+                new DateTime(2021, 03, 02, 06, 00, 00),
                 new DateTime(2021, 03, 02, 07, 00, 00),
                 new DateTime(2021, 03, 02, 08, 00, 00),
                 new DateTime(2021, 03, 02, 09, 00, 00),
@@ -55,20 +70,6 @@ namespace TollFeeCalculator.Test.Tests
             };
 
             var expected = tollFeeConstants.MaximumFeeParDay;
-            var result = tollFeeCalculator.GetTollFee(testConstants.Car, dates);
-
-            Assert.AreEqual(expected, result);
-        }
-        [Test]
-        public void When_Passing_Toll_At_0800_1500_1800_Get_Correct_Fee()
-        {
-            DateTime[] dates = new DateTime[] {
-                new DateTime(2022, 06, 20, 08, 00, 00),
-                new DateTime(2022, 03, 02, 15, 00, 00),
-                new DateTime(2022, 03, 02, 18, 00, 00)
-            };
-
-            var expected = 34;
             var result = tollFeeCalculator.GetTollFee(testConstants.Car, dates);
 
             Assert.AreEqual(expected, result);
@@ -90,5 +91,6 @@ namespace TollFeeCalculator.Test.Tests
 
             Assert.AreEqual(expected, result);
         }
+        #endregion
     }
 }
