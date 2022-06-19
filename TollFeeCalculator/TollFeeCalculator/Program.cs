@@ -11,7 +11,7 @@ namespace TollFeeCalculator
                 new DateTime(2022, 06, 17, 08, 00, 00),
                 new DateTime(2022, 06, 18, 08, 00, 00)         
             };
-            Car vehicle = new Car();
+            Vehicle vehicle = new Vehicle(VehicleType.Tractor);
             int result = new TollCalculator().GetTollFee(vehicle, dates);
             Console.ReadLine();
         }

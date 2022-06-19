@@ -6,8 +6,39 @@ using System.Threading.Tasks;
 
 namespace TollFeeCalculator
 {
-    public interface Vehicle
+    public class Vehicle
     {
-        String GetVehicleType();
+        public VehicleType VehicleType { get; }
+        public Vehicle(VehicleType vehicleType)
+        {
+            VehicleType = vehicleType;
+        }
+
+        private readonly List<VehicleType> TollFreeVehicleCollection = new List<VehicleType>
+        {
+            VehicleType.Motorbike,
+            VehicleType.Tractor,
+            VehicleType.Emergency,
+            VehicleType.Diplomat,
+            VehicleType.Foreign,
+            VehicleType.Military
+        };
+        public bool VehicleIsTollFree
+        {
+            get
+            {
+                return TollFreeVehicleCollection.Contains(this.VehicleType);
+            }
+        }        
+    }
+    public enum VehicleType
+    {
+        Car,
+        Motorbike,
+        Tractor,
+        Emergency,
+        Diplomat,
+        Foreign,
+        Military
     }
 }
