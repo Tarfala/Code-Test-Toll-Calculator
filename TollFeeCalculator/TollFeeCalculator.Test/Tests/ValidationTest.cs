@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using TollFeeCalculator.Test.Constants;
 
 namespace TollFeeCalculator.Test
 {
@@ -7,14 +8,7 @@ namespace TollFeeCalculator.Test
     public class ValidationTest
     {
         readonly TollCalculator tollFeeCalculator = new TollCalculator();
-        readonly Vehicle car = new Vehicle(VehicleType.Car);
-
-        readonly DateTime[] generalTollTimePasses = new DateTime[]
-        {
-                new DateTime(2022, 06, 17, 08, 00, 00),
-                new DateTime(2022, 06, 22, 08, 00, 00),
-                new DateTime(2022, 06, 18, 08, 00, 00)
-        };
+        readonly TestConstants testConstants = new TestConstants();
 
         [Test]
         public void Null_Parameters_Should_Return_0_Toll_Fee()
@@ -22,8 +16,8 @@ namespace TollFeeCalculator.Test
             var expected = 0;
 
             var carAndTimeNullResult = tollFeeCalculator.GetTollFee(null, null);
-            var carNullResult = tollFeeCalculator.GetTollFee(null, generalTollTimePasses);
-            var timeNullResult = tollFeeCalculator.GetTollFee(car, null);
+            var carNullResult = tollFeeCalculator.GetTollFee(null, testConstants.GeneralTollTimePasses);
+            var timeNullResult = tollFeeCalculator.GetTollFee(testConstants.Car, null);
             var resultSum = carAndTimeNullResult + carNullResult + timeNullResult;
 
             Assert.AreEqual(expected, resultSum);
@@ -34,7 +28,7 @@ namespace TollFeeCalculator.Test
             var expected = 0;
             var emptyTollPasses = new DateTime[] { };
 
-            var result = tollFeeCalculator.GetTollFee(car, emptyTollPasses);
+            var result = tollFeeCalculator.GetTollFee(testConstants.Car, emptyTollPasses);
 
             Assert.AreEqual(expected, result);
         }
