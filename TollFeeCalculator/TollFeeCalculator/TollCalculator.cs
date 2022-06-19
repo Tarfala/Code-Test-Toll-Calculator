@@ -60,7 +60,7 @@ public class TollCalculator
     {
         var tollFeeStartTime = new TimeSpan(06, 00, 00);
         var tollFeeEndTime = new TimeSpan(18, 30, 00);
-        if (tollPass.TimeOfDay < tollFeeStartTime || tollPass.TimeOfDay > tollFeeEndTime) return true;
+        if (tollPass.TimeOfDay < tollFeeStartTime || tollPass.TimeOfDay >= tollFeeEndTime) return true;
         return false;
     }
     private IList<TollPassageAndFee> GetTollPassageAndFee(IList<DateTime> tollPassesThatWillHaveFee)

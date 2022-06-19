@@ -63,7 +63,7 @@ namespace TollFeeCalculator.Test
         #region Free Toll Passage Test
         [Test]
         [TestCase("2022-06-20 05:59:59")]
-        [TestCase("2022-06-20 18:30:01")] 
+        [TestCase("2022-06-20 18:30:00")] 
         public void Toll_Pass_Before_And_After_Fee_Starts_Should_Be_Free(DateTime tollPass)
         {
             var expected = true;
